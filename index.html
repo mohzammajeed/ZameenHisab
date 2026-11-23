@@ -1,0 +1,192 @@
+<!doctype html>
+<html lang="en" dir="ltr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>ZameenHisab: land area, khata and wirasat calculator</title>
+<meta name="description" content="Free Android app that turns plot sides into kanal, marla and sarsai, keeps your khata and splits inheritance. No login, no ads.">
+<meta property="og:title" content="ZameenHisab">
+<meta property="og:description" content="Free Android app that turns plot sides into kanal, marla and sarsai, keeps your khata and splits inheritance. No login, no ads.">
+<meta property="og:type" content="website">
+<meta property="og:image" content="img/home-en.webp">
+<meta name="theme-color" content="#1b7a3a">
+<link rel="icon" href="favicon.svg" type="image/svg+xml">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Familjen+Grotesk:wght@400;500;700&family=Noto+Naskh+Arabic:wght@400;700&display=swap" rel="stylesheet">
+<style>
+:root{--paper:#edf2ec;--ink:#14281c;--field:#1b7a3a;--field-d:#0f5a28;--survey:#2b5fb4;--rule:#c3d3c6;--soft:#4b6454}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;color:var(--ink);background-color:var(--paper);
+ background-image:linear-gradient(rgba(20,40,28,.045) 1px,transparent 1px),linear-gradient(90deg,rgba(20,40,28,.045) 1px,transparent 1px);background-size:32px 32px;
+ font:400 17px/1.6 "Familjen Grotesk",system-ui,-apple-system,"Segoe UI",Roboto,sans-serif}
+:lang(ur) body,body:lang(ur){font-family:"Noto Naskh Arabic","Familjen Grotesk",system-ui,sans-serif;line-height:1.95}
+a{color:inherit}
+:focus-visible{outline:3px solid var(--survey);outline-offset:3px;border-radius:4px}
+.wrap{max-width:1080px;margin:0 auto;padding:0 20px}
+header{display:flex;align-items:center;gap:12px;padding:16px 0}
+.brand{display:flex;align-items:center;gap:10px;font-weight:700;font-size:20px;text-decoration:none;margin-inline-end:auto}
+.brand svg{width:32px;height:32px}
+.lang{font:inherit;font-weight:700;background:transparent;border:1.5px solid var(--ink);color:var(--ink);border-radius:999px;padding:4px 16px;cursor:pointer}
+.lang:hover{background:var(--ink);color:var(--paper)}
+.btn{display:inline-block;background:var(--field);color:#fff;text-decoration:none;font-weight:700;border-radius:12px;padding:13px 22px;border:2px solid var(--field)}
+.btn:hover{background:var(--field-d);border-color:var(--field-d)}
+.btn.sm{padding:6px 16px;border-radius:999px;font-size:16px}
+h1{font-size:clamp(34px,6vw,56px);line-height:1.08;margin:0 0 16px;letter-spacing:-.02em}
+:lang(ur) h1{line-height:1.5;letter-spacing:0}
+h2{font-size:26px;margin:0 0 14px;line-height:1.25}
+.hero{display:grid;gap:36px;padding:28px 0 56px;align-items:center}
+.lead{font-size:19px;max-width:34em;margin:0 0 24px}
+.meta{margin:14px 0 0;color:var(--soft);font-size:15px}
+.meta span{display:block}
+/* the try-it plot */
+.sheet{background:#fff;border:2px solid var(--ink);border-radius:6px;padding:18px;position:relative}
+.sheet h2{font-size:20px;margin:0 0 10px}
+.plot{width:100%;height:auto;display:block;direction:ltr}
+.fields{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin:8px 0 12px}
+label{display:block;font-size:14px;color:var(--soft)}
+input[type=number]{width:100%;font:inherit;font-size:20px;font-weight:700;color:var(--ink);padding:8px 10px;border:2px solid var(--rule);border-radius:8px;background:#fff;direction:ltr;text-align:start}
+input[type=number]:focus{border-color:var(--field);outline:0}
+.chips{display:flex;gap:8px;flex-wrap:wrap;margin:4px 0 14px}
+.chips input{position:absolute;opacity:0;pointer-events:none}
+.chips label{color:var(--ink);font-size:16px;font-weight:700;border:2px solid var(--rule);border-radius:999px;padding:3px 14px;cursor:pointer}
+.chips input:checked+label{background:var(--field);border-color:var(--field);color:#fff}
+.chips input:focus-visible+label{outline:3px solid var(--survey);outline-offset:2px}
+.out{border-top:2px solid var(--ink);padding-top:10px}
+.big{font-size:clamp(26px,5vw,34px);font-weight:700;color:var(--field-d);line-height:1.3;direction:inherit}
+.sub{color:var(--soft);font-size:15px}
+section{padding:36px 0;border-top:1.5px solid var(--ink)}
+/* phones */
+.phones{display:grid;grid-template-columns:repeat(3,1fr);gap:clamp(10px,3vw,32px);margin-top:18px;align-items:start}
+figure{margin:0}
+.phone{border:6px solid var(--ink);border-radius:28px;overflow:hidden;background:#fff;aspect-ratio:9/18}
+.phone img{width:100%;height:100%;object-fit:cover;object-position:top;display:block}
+figcaption{text-align:center;font-size:15px;color:var(--soft);margin-top:8px}
+/* land-record list */
+.rec{margin:0;padding:0;list-style:none;display:grid;gap:0 40px}
+.rec li{display:grid;grid-template-columns:minmax(120px,36%) 1fr;gap:14px;padding:14px 0;border-bottom:1px solid var(--rule)}
+.rec b{font-weight:700}
+.rec span{color:var(--ink)}
+.note{margin:16px 0 0;color:var(--soft)}
+ol.steps{margin:0;padding:0;list-style:none;counter-reset:s;display:grid;gap:12px;max-width:36em}
+ol.steps li{counter-increment:s;display:grid;grid-template-columns:36px 1fr;gap:12px;align-items:start}
+ol.steps li::before{content:counter(s);width:34px;height:34px;border:2px solid var(--survey);color:var(--survey);border-radius:50%;display:grid;place-items:center;font-weight:700;line-height:1}
+.two{display:grid;gap:28px}
+footer{padding:28px 0 44px;border-top:1.5px solid var(--ink);color:var(--soft);font-size:15px}
+footer p{margin:4px 0}
+footer a{color:var(--ink);font-weight:700}
+@media(min-width:860px){
+ .hero{grid-template-columns:1.05fr .95fr;gap:56px}
+ .rec{grid-template-columns:1fr 1fr}
+ .two{grid-template-columns:1fr 1fr;gap:56px}
+}
+@media(max-width:480px){header{gap:8px}.brand{font-size:18px;gap:8px}.brand svg{width:28px;height:28px}.lang{padding:4px 12px}.btn.sm{padding:6px 12px}}
+@media(max-width:520px){.rec li{grid-template-columns:1fr;gap:0}.phones{gap:8px}.phone{border-width:4px;border-radius:18px}}
+@media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}}
+</style>
+</head>
+<body>
+<div class="wrap">
+<header>
+ <a class="brand" href="#top" aria-label="ZameenHisab"><svg viewBox="0 0 32 32" aria-hidden="true"><rect width="32" height="32" rx="8" fill="#1b7a3a"/><path d="M7 21 L11 9 L25 7 L24 23 Z" fill="#fff" fill-opacity=".18" stroke="#fff" stroke-width="2" stroke-linejoin="round"/><circle cx="11" cy="9" r="2" fill="#fff"/><circle cx="25" cy="7" r="2" fill="#fff"/><circle cx="24" cy="23" r="2" fill="#fff"/><circle cx="7" cy="21" r="2" fill="#fff"/></svg><span>ZameenHisab</span></a>
+ <button class="lang" id="lang" type="button" aria-label="Language">اردو</button>
+ <a class="btn sm" href="ZameenHisab.apk" download><span data-k="dl">Download</span></a>
+</header>
+<main id="top">
+<div class="hero">
+ <div>
+  <h1><span data-k="h">Measure your land in seconds</span></h1>
+  <p class="lead"><span data-k="p">Enter the sides of a plot and get the area in kanal, marla and sarsai. Keep your khata. Split an inheritance by Hanafi or Jafaria rules.</span></p>
+  <a class="btn" href="ZameenHisab.apk" download><span data-k="cta">Download for Android</span></a>
+  <p class="meta"><span><span data-k="m1">Free. No login. No ads.</span></span><span><span data-k="m2">Android 7 or newer</span></span></p>
+ </div>
+ <div class="sheet" role="group" aria-labelledby="try">
+  <h2 id="try"><span data-k="try">Try it</span></h2>
+  <svg class="plot" id="plot" viewBox="0 0 320 210" role="img" aria-label="Plot sketch"></svg>
+  <div class="fields">
+   <div><label for="len"><span data-k="len">Length (ft)</span></label><input id="len" type="number" inputmode="decimal" min="1" max="2000" value="50"></div>
+   <div><label for="wid"><span data-k="wid">Width (ft)</span></label><input id="wid" type="number" inputmode="decimal" min="1" max="2000" value="30"></div>
+  </div>
+  <label id="mlabel"><span data-k="msz">Marla size (sq ft)</span></label>
+  <div class="chips" role="radiogroup" aria-labelledby="mlabel">
+   <input type="radio" name="m" id="m225" value="225" checked><label for="m225">225</label>
+   <input type="radio" name="m" id="m250" value="250"><label for="m250">250</label>
+   <input type="radio" name="m" id="m272" value="272.25"><label for="m272">272.25</label>
+  </div>
+  <div class="out" aria-live="polite"><div class="big" id="res"></div><div class="sub" id="sq"></div></div>
+ </div>
+</div>
+
+<section aria-labelledby="shots">
+ <h2 id="shots"><span data-k="shots">Inside the app</span></h2>
+ <div class="phones">
+  <figure><div class="phone"><img data-img="home" src="img/home-en.webp" alt="" width="720" height="1440" loading="lazy"></div><figcaption><span data-k="c1">Home</span></figcaption></figure>
+  <figure><div class="phone"><img data-img="plot" src="img/plot-en.webp" alt="" width="720" height="1440" loading="lazy"></div><figcaption><span data-k="c2">Plot sketch</span></figcaption></figure>
+  <figure><div class="phone"><img data-img="wir" src="img/wir-en.webp" alt="" width="720" height="1440" loading="lazy"></div><figcaption><span data-k="c3">Wirasat</span></figcaption></figure>
+ </div>
+</section>
+
+<section aria-labelledby="feat">
+ <h2 id="feat"><span data-k="feat">What it does</span></h2>
+ <ul class="rec">
+  <li><b><span data-k="f1n">Quick area</span></b><span><span data-k="f1d">Length times width in feet, gaz or karam.</span></span></li>
+  <li><b><span data-k="f2n">Plot measure</span></b><span><span data-k="f2d">Enter up to 10 sides. The sketch draws as you type.</span></span></li>
+  <li><b><span data-k="f3n">Map and GPS</span></b><span><span data-k="f3d">Walk the corners or tap them on a satellite map.</span></span></li>
+  <li><b><span data-k="f4n">Khata</span></b><span><span data-k="f4d">Add khasra plots and see the total area.</span></span></li>
+  <li><b><span data-k="f5n">Wirasat</span></b><span><span data-k="f5d">Hanafi and Jafaria shares as fractions and as land.</span></span></li>
+  <li><b><span data-k="f6n">Hissa, price, converter</span></b><span><span data-k="f6d">Split land, find the price per marla, convert any unit.</span></span></li>
+ </ul>
+ <p class="note"><span data-k="f7">In Urdu and English. Share to WhatsApp or save as PDF.</span></p>
+</section>
+
+<section class="two">
+ <div><h2><span data-k="inst">How to install</span></h2>
+  <ol class="steps"><li><span data-k="s1">Download the APK.</span></li><li><span data-k="s2">Open it. If asked, allow installs from your browser.</span></li><li><span data-k="s3">Open ZameenHisab and choose your region.</span></li></ol>
+  <p style="margin-top:20px"><a class="btn" href="ZameenHisab.apk" download><span data-k="cta">Download for Android</span></a></p></div>
+ <div id="privacy"><h2><span data-k="priv">Your data</span></h2><p style="max-width:34em;margin:0"><span data-k="pp">Your calculations and khata stay on your phone. There is no account, no ads and no tracking. The internet is used only for the map and place search, and location only when you measure with GPS.</span></p></div>
+</section>
+</main>
+<footer>
+ <p><span data-k="fc">Questions or mistakes?</span> <a href="mailto:creatormms720@gmail.com">creatormms720@gmail.com</a></p>
+ <p><span data-k="fn">Results are estimates. For court or registry work, get an official measurement.</span></p>
+ <p>ZameenHisab &middot; <span data-k="ver">Version 1.0</span></p>
+</footer>
+</div>
+<script>
+const L={"en": {"title": "ZameenHisab: land area, khata and wirasat calculator", "desc": "Free Android app that turns plot sides into kanal, marla and sarsai, keeps your khata and splits inheritance. No login, no ads.", "dl": "Download", "h": "Measure your land in seconds", "p": "Enter the sides of a plot and get the area in kanal, marla and sarsai. Keep your khata. Split an inheritance by Hanafi or Jafaria rules.", "cta": "Download for Android", "m1": "Free. No login. No ads.", "m2": "Android 7 or newer", "try": "Try it", "len": "Length (ft)", "wid": "Width (ft)", "msz": "Marla size (sq ft)", "kanal": "Kanal", "marla": "Marla", "sarsai": "Sarsai", "sqft": "sq ft", "shots": "Inside the app", "c1": "Home", "c2": "Plot sketch", "c3": "Wirasat", "feat": "What it does", "f1n": "Quick area", "f1d": "Length times width in feet, gaz or karam.", "f2n": "Plot measure", "f2d": "Enter up to 10 sides. The sketch draws as you type.", "f3n": "Map and GPS", "f3d": "Walk the corners or tap them on a satellite map.", "f4n": "Khata", "f4d": "Add khasra plots and see the total area.", "f5n": "Wirasat", "f5d": "Hanafi and Jafaria shares as fractions and as land.", "f6n": "Hissa, price, converter", "f6d": "Split land, find the price per marla, convert any unit.", "f7": "In Urdu and English. Share to WhatsApp or save as PDF.", "inst": "How to install", "s1": "Download the APK.", "s2": "Open it. If asked, allow installs from your browser.", "s3": "Open ZameenHisab and choose your region.", "priv": "Your data", "pp": "Your calculations and khata stay on your phone. There is no account, no ads and no tracking. The internet is used only for the map and place search, and location only when you measure with GPS.", "fc": "Questions or mistakes?", "fn": "Results are estimates. For court or registry work, get an official measurement.", "ver": "Version 1.0"}, "ur": {"title": "زمین حساب: رقبہ، کھاتہ اور وراثت کا حساب", "desc": "مفت اینڈرائیڈ ایپ جو پلاٹ کے اطراف سے کنال، مرلہ اور سرسائی نکالتی ہے، کھاتہ رکھتی ہے اور وراثت تقسیم کرتی ہے۔ بغیر لاگ ان، بغیر اشتہار۔", "dl": "ڈاؤن لوڈ", "h": "زمین کا حساب، چند سیکنڈ میں", "p": "پلاٹ کے اطراف ڈالیں تو رقبہ کنال، مرلہ اور سرسائی میں مل جاتا ہے۔ کھاتہ بنائیں اور حنفی یا جعفریہ کے مطابق وراثت تقسیم کریں۔", "cta": "اینڈرائیڈ کے لیے ڈاؤن لوڈ کریں", "m1": "مفت۔ بغیر لاگ ان۔ بغیر اشتہار۔", "m2": "اینڈرائیڈ 7 یا اس سے نیا", "try": "خود آزمائیں", "len": "لمبائی (فٹ)", "wid": "چوڑائی (فٹ)", "msz": "مرلہ کا سائز (مربع فٹ)", "kanal": "کنال", "marla": "مرلہ", "sarsai": "سرسائی", "sqft": "مربع فٹ", "shots": "ایپ کے اندر", "c1": "ہوم", "c2": "پلاٹ کا نقشہ", "c3": "وراثت", "feat": "کیا کچھ کرتی ہے", "f1n": "جلدی رقبہ", "f1d": "لمبائی ضرب چوڑائی، فٹ، گز یا کرم میں۔", "f2n": "پلاٹ کی پیمائش", "f2d": "10 اطراف تک درج کریں۔ نقشہ ساتھ ساتھ بنتا ہے۔", "f3n": "نقشہ اور GPS", "f3d": "کونوں پر چل کر یا سیٹلائٹ نقشے پر ٹچ کر کے رقبہ نکالیں۔", "f4n": "کھاتہ", "f4d": "خسرہ کے پلاٹ جمع کریں اور کل رقبہ دیکھیں۔", "f5n": "وراثت", "f5d": "حنفی اور جعفریہ حصے، کسر اور زمین دونوں میں۔", "f6n": "حصہ، قیمت، کنورٹر", "f6d": "زمین تقسیم کریں، فی مرلہ قیمت نکالیں، کوئی بھی یونٹ بدلیں۔", "f7": "اردو اور انگلش میں۔ واٹس ایپ پر شیئر کریں یا PDF بنائیں۔", "inst": "انسٹال کرنے کا طریقہ", "s1": "APK ڈاؤن لوڈ کریں۔", "s2": "اسے کھولیں۔ پوچھا جائے تو براؤزر کو انسٹال کی اجازت دیں۔", "s3": "زمین حساب کھولیں اور اپنا علاقہ منتخب کریں۔", "priv": "آپ کا ڈیٹا", "pp": "آپ کے حساب اور کھاتہ صرف آپ کے فون میں رہتے ہیں۔ کوئی اکاؤنٹ، اشتہار یا ٹریکنگ نہیں۔ انٹرنیٹ صرف نقشے اور جگہ کی تلاش کے لیے استعمال ہوتا ہے، اور لوکیشن صرف GPS سے پیمائش کے وقت۔", "fc": "سوال یا غلطی کی اطلاع:", "fn": "نتائج اندازاً ہیں۔ عدالت یا رجسٹری کے کام کے لیے سرکاری پیمائش کروائیں۔", "ver": "ورژن 1.0"}};
+let lang='en';
+const $=id=>document.getElementById(id);
+function fmt(n,d){return (+(+n).toFixed(d)).toLocaleString('en-US',{maximumFractionDigits:d})}
+function split(sq,m){const K=20*m;let k=Math.floor(sq/K+1e-9),r=sq-k*K,ma=Math.floor(r/m+1e-9);r-=ma*m;let sa=Math.round(r/(m/9)*100)/100;if(sa>=9){sa=0;ma++}if(ma>=20){ma-=20;k++}return{k,ma,sa}}
+function draw(l,w){
+ const maxW=210,maxH=120,s=Math.min(maxW/l,maxH/w),rw=l*s,rh=w*s,x=(320-rw)/2+10,y=(210-rh)/2-2;
+ const ink='#14281c',bl='#2b5fb4';
+ const tick=(x1,y1,x2,y2)=>`<line x1="${x1}" y1="${y1}" x2="${x2}" y2="${y2}" stroke="${bl}" stroke-width="1.5"/>`;
+ $('plot').innerHTML=`<defs><pattern id="h" width="8" height="8" patternUnits="userSpaceOnUse" patternTransform="rotate(45)"><line x1="0" y1="0" x2="0" y2="8" stroke="#1b7a3a" stroke-opacity=".22" stroke-width="2"/></pattern></defs>
+ <rect x="${x}" y="${y}" width="${rw}" height="${rh}" fill="url(#h)" stroke="${ink}" stroke-width="2.5"/>
+ ${tick(x,y-16,x+rw,y-16)}${tick(x,y-21,x,y-11)}${tick(x+rw,y-21,x+rw,y-11)}
+ <text x="${x+rw/2}" y="${y-22}" text-anchor="middle" font-size="14" font-weight="700" fill="${bl}">${fmt(l,2)} ft</text>
+ ${tick(x-16,y,x-16,y+rh)}${tick(x-21,y,x-11,y)}${tick(x-21,y+rh,x-11,y+rh)}
+ <text x="${x-24}" y="${y+rh/2}" text-anchor="middle" font-size="14" font-weight="700" fill="${bl}" transform="rotate(-90 ${x-24} ${y+rh/2})">${fmt(w,2)} ft</text>`}
+function calc(){
+ const l=parseFloat($('len').value),w=parseFloat($('wid').value),m=parseFloat(document.querySelector('input[name=m]:checked').value),T=L[lang];
+ if(!(l>0&&w>0)){$('res').textContent='';$('sq').textContent='';return}
+ const sq=l*w,o=split(sq,m);draw(l,w);
+ $('res').textContent=`${o.k} ${T.kanal} ${o.ma} ${T.marla} ${fmt(o.sa,2)} ${T.sarsai}`;
+ $('sq').textContent=`${fmt(sq,2)} ${T.sqft}`}
+function setLang(x){
+ lang=x;const T=L[x],d=document.documentElement;d.lang=x;d.dir=x=='ur'?'rtl':'ltr';
+ document.querySelectorAll('[data-k]').forEach(e=>e.textContent=T[e.dataset.k]);
+ document.querySelectorAll('[data-img]').forEach(e=>e.src='img/'+e.dataset.img+'-'+x+'.webp');
+ document.title=T.title;document.querySelector('meta[name=description]').content=T.desc;
+ $('lang').textContent=x=='ur'?'English':'اردو';
+ try{localStorage.setItem('zh-lang',x)}catch(e){}calc()}
+$('lang').onclick=()=>setLang(lang=='ur'?'en':'ur');
+['len','wid'].forEach(i=>$(i).addEventListener('input',calc));
+document.querySelectorAll('input[name=m]').forEach(e=>e.addEventListener('change',calc));
+let start='en';try{start=localStorage.getItem('zh-lang')||((navigator.language||'').toLowerCase().startsWith('ur')?'ur':'en')}catch(e){}
+setLang(start);
+</script>
+</body>
+</html>
